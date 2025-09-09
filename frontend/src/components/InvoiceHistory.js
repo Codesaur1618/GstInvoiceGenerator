@@ -18,10 +18,6 @@ const InvoiceHistory = () => {
   const [sortBy, setSortBy] = useState('date');
   const [sortOrder, setSortOrder] = useState('desc');
 
-  useEffect(() => {
-    fetchInvoices();
-  }, [pagination.page, sortBy, sortOrder, fetchInvoices]);
-
   const fetchInvoices = useCallback(async () => {
     try {
       setLoading(true);
@@ -35,6 +31,10 @@ const InvoiceHistory = () => {
       setLoading(false);
     }
   }, [pagination.page, pagination.limit, sortBy, sortOrder]);
+
+  useEffect(() => {
+    fetchInvoices();
+  }, [pagination.page, sortBy, sortOrder, fetchInvoices]);
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this invoice?')) {

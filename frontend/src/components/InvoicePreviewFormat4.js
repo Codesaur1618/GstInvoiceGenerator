@@ -13,12 +13,6 @@ const InvoicePreviewFormat4 = ({ invoice: propInvoice }) => {
   const [loading, setLoading] = useState(!propInvoice);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
-  useEffect(() => {
-    if (!propInvoice) {
-      fetchInvoice();
-    }
-  }, [id, propInvoice, fetchInvoice]);
-
   const fetchInvoice = useCallback(async () => {
     try {
       const data = await invoiceAPI.getInvoiceById(id);
@@ -31,6 +25,12 @@ const InvoicePreviewFormat4 = ({ invoice: propInvoice }) => {
       setLoading(false);
     }
   }, [id, navigate]);
+
+  useEffect(() => {
+    if (!propInvoice) {
+      fetchInvoice();
+    }
+  }, [id, propInvoice, fetchInvoice]);
 
   const handlePrint = () => {
     window.print();

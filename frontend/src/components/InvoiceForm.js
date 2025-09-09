@@ -29,65 +29,6 @@ const InvoiceForm = () => {
   // Watch form values for calculations
   const watchedValues = watch();
 
-  // Load saved data on component mount
-  useEffect(() => {
-    loadSessionData();
-    fetchBuyers();
-    fetchBusinesses();
-    fetchProducts();
-  }, [loadSessionData]);
-
-  // Fetch available buyers
-  const fetchBuyers = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/buyers', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      const data = await response.json();
-      setBuyers(data.buyers || []);
-      
-      // No auto-selection - let user choose manually
-    } catch (error) {
-      console.error('Error fetching buyers:', error);
-    }
-  };
-
-  // Fetch available businesses
-  const fetchBusinesses = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/sellers', {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-      });
-      const data = await response.json();
-      setBusinesses(data.sellers || []);
-      
-      // No auto-selection - let user choose manually
-    } catch (error) {
-      console.error('Error fetching businesses:', error);
-    }
-  };
-
-  // Fetch available products
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/products', {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-      });
-      const data = await response.json();
-      // Products fetched but not stored in state since not used in component
-      console.log('Products fetched:', data.products?.length || 0);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    }
-  };
-
-  // Save form data to localStorage whenever it changes
-  useEffect(() => {
-    saveSessionData();
-  }, [watchedValues, items, selectedBusinessId, selectedBuyerId, gstRate, saveSessionData]);
-
   // Load session data from localStorage
   const loadSessionData = useCallback((restoreSelections = false) => {
     try {
@@ -152,6 +93,65 @@ const InvoiceForm = () => {
       console.error('Error saving session data:', error);
     }
   }, [watchedValues, items, selectedBusinessId, selectedBuyerId, gstRate, taxType]);
+
+  // Fetch available buyers
+  const fetchBuyers = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/buyers', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      const data = await response.json();
+      setBuyers(data.buyers || []);
+      
+      // No auto-selection - let user choose manually
+    } catch (error) {
+      console.error('Error fetching buyers:', error);
+    }
+  };
+
+  // Fetch available businesses
+  const fetchBusinesses = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/sellers', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      const data = await response.json();
+      setBusinesses(data.sellers || []);
+      
+      // No auto-selection - let user choose manually
+    } catch (error) {
+      console.error('Error fetching businesses:', error);
+    }
+  };
+
+  // Fetch available products
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/products', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      const data = await response.json();
+      // Products fetched but not stored in state since not used in component
+      console.log('Products fetched:', data.products?.length || 0);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
+  // Load saved data on component mount
+  useEffect(() => {
+    loadSessionData();
+    fetchBuyers();
+    fetchBusinesses();
+    fetchProducts();
+  }, [loadSessionData]);
+
+  // Save form data to localStorage whenever it changes
+  useEffect(() => {
+    saveSessionData();
+  }, [watchedValues, items, selectedBusinessId, selectedBuyerId, gstRate, saveSessionData]);
 
   // Clear session data (for new invoice)
   const clearSessionData = () => {

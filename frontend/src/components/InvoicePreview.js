@@ -10,10 +10,6 @@ const InvoicePreview = () => {
   const [invoice, setInvoice] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchInvoice();
-  }, [id, fetchInvoice]);
-
   const fetchInvoice = useCallback(async () => {
     try {
       const data = await invoiceAPI.getInvoiceById(id);
@@ -26,6 +22,10 @@ const InvoicePreview = () => {
       setLoading(false);
     }
   }, [id, navigate]);
+
+  useEffect(() => {
+    fetchInvoice();
+  }, [id, fetchInvoice]);
 
   if (loading) {
     return (
