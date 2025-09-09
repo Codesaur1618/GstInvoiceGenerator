@@ -31,11 +31,6 @@
     "NODE_ENV": "production",
     "JWT_SECRET": "@jwt_secret",
     "DATABASE_URL": "@database_url"
-  },
-  "functions": {
-    "api/**/*.js": {
-      "maxDuration": 30
-    }
   }
 }
 
