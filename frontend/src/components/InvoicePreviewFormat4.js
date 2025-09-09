@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { invoiceAPI } from '../services/api';
 import toast from 'react-hot-toast';
@@ -17,9 +17,9 @@ const InvoicePreviewFormat4 = ({ invoice: propInvoice }) => {
     if (!propInvoice) {
       fetchInvoice();
     }
-  }, [id, propInvoice]);
+  }, [id, propInvoice, fetchInvoice]);
 
-  const fetchInvoice = async () => {
+  const fetchInvoice = useCallback(async () => {
     try {
       const data = await invoiceAPI.getInvoiceById(id);
       setInvoice(data.invoice);
@@ -30,7 +30,7 @@ const InvoicePreviewFormat4 = ({ invoice: propInvoice }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, navigate]);
 
   const handlePrint = () => {
     window.print();

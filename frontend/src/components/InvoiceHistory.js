@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { invoiceAPI } from '../services/api';
 import toast from 'react-hot-toast';
@@ -20,9 +20,9 @@ const InvoiceHistory = () => {
 
   useEffect(() => {
     fetchInvoices();
-  }, [pagination.page, sortBy, sortOrder]);
+  }, [pagination.page, sortBy, sortOrder, fetchInvoices]);
 
-  const fetchInvoices = async () => {
+  const fetchInvoices = useCallback(async () => {
     try {
       setLoading(true);
       const data = await invoiceAPI.getInvoices(pagination.page, pagination.limit, sortBy, sortOrder);
@@ -34,7 +34,7 @@ const InvoiceHistory = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [pagination.page, pagination.limit, sortBy, sortOrder]);
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this invoice?')) {

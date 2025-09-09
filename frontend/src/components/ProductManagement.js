@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { authAPI } from '../services/api';
 import toast from 'react-hot-toast';
 
 const ProductManagement = () => {
