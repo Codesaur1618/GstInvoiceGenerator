@@ -5,7 +5,6 @@ const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
-const productRoutes = require('./routes/products');
 const invoiceRoutes = require('./routes/invoices');
 const sellerRoutes = require('./routes/sellers');
 const buyerRoutes = require('./routes/buyers');
@@ -66,7 +65,6 @@ app.get('/health', (req, res) => {
 
 // API routes
 app.use('/api/auth', authRoutes);
-app.use('/api/products', productRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/sellers', sellerRoutes);
 app.use('/api/buyers', buyerRoutes);

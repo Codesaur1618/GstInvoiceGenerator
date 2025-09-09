@@ -6,7 +6,6 @@ import InvoiceHistory from './components/InvoiceHistory';
 import InvoicePreview from './components/InvoicePreview';
 import Navbar from './components/Navbar';
 import LoginForm from './components/LoginForm';
-import ProductManagement from './components/ProductManagement';
 import BusinessManagement from './components/BusinessManagement';
 import BuyerManagement from './components/BuyerManagement';
 
@@ -87,7 +86,6 @@ function App() {
             <Route path="/" element={<InvoiceForm />} />
             <Route path="/history" element={<InvoiceHistory />} />
             <Route path="/preview/:id" element={<InvoicePreview />} />
-            <Route path="/products" element={<ProductManagement />} />
             <Route path="/businesses" element={<BusinessManagement />} />
             <Route path="/buyers" element={<BuyerManagement />} />
           </Routes>

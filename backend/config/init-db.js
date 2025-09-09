@@ -16,7 +16,7 @@ async function initializeDatabase() {
     console.log('✅ Enabled foreign key constraints');
     
     // Execute DROP TABLE statements
-    const dropTables = ['invoice_items', 'invoices', 'products', 'sellers', 'buyers', 'users'];
+    const dropTables = ['invoice_items', 'invoices', 'sellers', 'buyers', 'users'];
     for (const table of dropTables) {
       await db.raw(`DROP TABLE IF EXISTS ${table}`);
       console.log(`✅ Dropped table if exists: ${table}`);
@@ -77,24 +77,6 @@ async function initializeDatabase() {
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )`,
       
-      // Products table
-      `CREATE TABLE products (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        seller_id INTEGER NOT NULL,
-        name VARCHAR(255) NOT NULL,
-        description TEXT,
-        hsn_code VARCHAR(10),
-        unit VARCHAR(50) DEFAULT 'NOS',
-        rate DECIMAL(12,2) NOT NULL,
-        gst_rate DECIMAL(5,2) DEFAULT 18.00,
-        stock_quantity DECIMAL(10,2) DEFAULT 0,
-        min_stock_level DECIMAL(10,2) DEFAULT 0,
-        is_active BOOLEAN DEFAULT 1,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (seller_id) REFERENCES sellers(id) ON DELETE CASCADE
-      )`,
-      
       // Invoices table
       `CREATE TABLE invoices (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -136,7 +118,6 @@ async function initializeDatabase() {
       `CREATE TABLE invoice_items (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         invoice_id INTEGER NOT NULL,
-        product_id INTEGER,
         serial_number INTEGER NOT NULL,
         description TEXT NOT NULL,
         hsn_code VARCHAR(10),
@@ -149,8 +130,7 @@ async function initializeDatabase() {
         igst_amount DECIMAL(12,2) DEFAULT 0,
         amount DECIMAL(12,2) NOT NULL DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE CASCADE,
-        FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL
+        FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE CASCADE
       )`
     ];
     
@@ -169,15 +149,12 @@ async function initializeDatabase() {
       'CREATE INDEX idx_sellers_gstin ON sellers(gstin)',
       'CREATE INDEX idx_buyers_business_name ON buyers(business_name)',
       'CREATE INDEX idx_buyers_gstin ON buyers(gstin)',
-      'CREATE INDEX idx_products_seller_id ON products(seller_id)',
-      'CREATE INDEX idx_products_name ON products(name)',
       'CREATE INDEX idx_invoices_invoice_number ON invoices(invoice_number)',
       'CREATE INDEX idx_invoices_date ON invoices(date)',
       'CREATE INDEX idx_invoices_seller_id ON invoices(seller_id)',
       'CREATE INDEX idx_invoices_buyer_id ON invoices(buyer_id)',
       'CREATE INDEX idx_invoices_status ON invoices(status)',
-      'CREATE INDEX idx_invoice_items_invoice_id ON invoice_items(invoice_id)',
-      'CREATE INDEX idx_invoice_items_product_id ON invoice_items(product_id)'
+      'CREATE INDEX idx_invoice_items_invoice_id ON invoice_items(invoice_id)'
     ];
     
     for (const statement of indexStatements) {
@@ -253,63 +230,12 @@ async function initializeDatabase() {
     ]);
     console.log('✅ Sample buyers created');
     
-    // Get seller IDs for products
-    const sellers = await db('sellers').select('id', 'business_name');
-    
-    // Insert sample products
-    const products = [
-      {
-        seller_id: sellers[0].id,
-        name: 'Laptop Dell XPS 13',
-        description: 'High-performance laptop with 16GB RAM',
-        hsn_code: '8471',
-        unit: 'NOS',
-        rate: 75000.00,
-        gst_rate: 18.00,
-        stock_quantity: 10
-      },
-      {
-        seller_id: sellers[0].id,
-        name: 'Wireless Mouse',
-        description: 'Ergonomic wireless mouse with USB receiver',
-        hsn_code: '8471',
-        unit: 'NOS',
-        rate: 1500.00,
-        gst_rate: 18.00,
-        stock_quantity: 50
-      },
-      {
-        seller_id: sellers[1].id,
-        name: 'USB-C Hub',
-        description: 'Multi-port USB-C hub with HDMI',
-        hsn_code: '8471',
-        unit: 'NOS',
-        rate: 3500.00,
-        gst_rate: 18.00,
-        stock_quantity: 25
-      },
-      {
-        seller_id: sellers[1].id,
-        name: 'Mechanical Keyboard',
-        description: 'RGB mechanical keyboard',
-        hsn_code: '8471',
-        unit: 'NOS',
-        rate: 8000.00,
-        gst_rate: 18.00,
-        stock_quantity: 15
-      }
-    ];
-    
-    await db('products').insert(products);
-    console.log('✅ Sample products created');
-    
     console.log('\n🎉 Database initialization completed successfully!');
     console.log('\n📝 Default credentials:');
     console.log('   Admin: admin / admin123');
     console.log('\n📊 Sample data created:');
     console.log('   - 2 Sellers (companies)');
     console.log('   - 2 Buyers (clients)');
-    console.log('   - 4 Products');
     
   } catch (error) {
     console.error('❌ Database initialization failed:', error);

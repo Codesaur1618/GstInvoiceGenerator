@@ -53,8 +53,6 @@ console.log('4. API endpoints:');
 console.log('   - POST   /api/auth/register     - Register new user');
 console.log('   - POST   /api/auth/login        - Login');
 console.log('   - GET    /api/auth/me           - Get current user');
-console.log('   - GET    /api/products          - List products');
-console.log('   - POST   /api/products          - Create product (seller)');
 console.log('   - GET    /api/invoices          - List invoices');
 console.log('   - POST   /api/invoices          - Create invoice\n');
 

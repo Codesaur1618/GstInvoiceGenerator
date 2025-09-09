@@ -126,26 +126,12 @@ const InvoiceForm = () => {
     }
   };
 
-  // Fetch available products
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/products', {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-      });
-      const data = await response.json();
-      // Products fetched but not stored in state since not used in component
-      console.log('Products fetched:', data.products?.length || 0);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    }
-  };
 
   // Load saved data on component mount
   useEffect(() => {
     loadSessionData();
     fetchBuyers();
     fetchBusinesses();
-    fetchProducts();
   }, [loadSessionData]);
 
   // Save form data to localStorage whenever it changes

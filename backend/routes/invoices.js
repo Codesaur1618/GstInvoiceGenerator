@@ -287,11 +287,7 @@ router.get('/:id', authenticate, async (req, res) => {
     
     // Get invoice items
     const items = await db('invoice_items')
-      .leftJoin('products', 'invoice_items.product_id', 'products.id')
-      .select(
-        'invoice_items.*',
-        'products.name as product_name'
-      )
+      .select('invoice_items.*')
       .where('invoice_items.invoice_id', invoice.id)
       .orderBy('invoice_items.serial_number');
     
@@ -414,7 +410,6 @@ router.post('/', authenticate, [
     // Insert invoice items
     const invoiceItems = items.map(item => ({
       invoice_id: invoiceId,
-      product_id: item.product_id || null,
       serial_number: item.serial_number,
       description: item.description,
       hsn_code: item.hsn_code,
@@ -429,15 +424,6 @@ router.post('/', authenticate, [
     }));
     
     await trx('invoice_items').insert(invoiceItems);
-    
-    // Update product stock if product_id is provided
-    for (const item of items) {
-      if (item.product_id && req.user.role === 'seller') {
-        await trx('products')
-          .where({ id: item.product_id, seller_id: seller.id })
-          .decrement('stock_quantity', item.qty);
-      }
-    }
     
     await trx.commit();
     
@@ -536,19 +522,6 @@ router.delete('/:id', authenticate, async (req, res) => {
     if (invoice.status !== 'draft') {
       await trx.rollback();
       return res.status(400).json({ error: 'Only draft invoices can be deleted' });
-    }
-    
-    // Restore product stock if applicable
-    if (req.user.role === 'seller') {
-      const items = await trx('invoice_items')
-        .where({ invoice_id: invoice.id })
-        .whereNotNull('product_id');
-      
-      for (const item of items) {
-        await trx('products')
-          .where({ id: item.product_id, seller_id: invoice.seller_id })
-          .increment('stock_quantity', item.qty);
-      }
     }
     
     // Delete invoice (cascade will delete items)
