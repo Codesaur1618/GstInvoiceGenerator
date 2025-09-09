@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -15,7 +15,6 @@ const InvoiceForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [buyers, setBuyers] = useState([]);
   const [businesses, setBusinesses] = useState([]);
-  const [products, setProducts] = useState([]);
   const [selectedBuyerId, setSelectedBuyerId] = useState('');
   const [selectedBusinessId, setSelectedBusinessId] = useState('');
   const [isSelectingBusiness, setIsSelectingBusiness] = useState(false);
@@ -36,7 +35,7 @@ const InvoiceForm = () => {
     fetchBuyers();
     fetchBusinesses();
     fetchProducts();
-  }, []);
+  }, [loadSessionData]);
 
   // Fetch available buyers
   const fetchBuyers = async () => {
@@ -77,7 +76,8 @@ const InvoiceForm = () => {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       const data = await response.json();
-      setProducts(data.products || []);
+      // Products fetched but not stored in state since not used in component
+      console.log('Products fetched:', data.products?.length || 0);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
@@ -86,10 +86,10 @@ const InvoiceForm = () => {
   // Save form data to localStorage whenever it changes
   useEffect(() => {
     saveSessionData();
-  }, [watchedValues, items, selectedBusinessId, selectedBuyerId, gstRate]);
+  }, [watchedValues, items, selectedBusinessId, selectedBuyerId, gstRate, saveSessionData]);
 
   // Load session data from localStorage
-  const loadSessionData = (restoreSelections = false) => {
+  const loadSessionData = useCallback((restoreSelections = false) => {
     try {
       const savedFormData = localStorage.getItem(SESSION_KEY);
       const savedItems = localStorage.getItem(ITEMS_KEY);
@@ -131,10 +131,10 @@ const InvoiceForm = () => {
     } catch (error) {
       console.error('Error loading session data:', error);
     }
-  };
+  }, [setValue]);
 
   // Save session data to localStorage
-  const saveSessionData = () => {
+  const saveSessionData = useCallback(() => {
     try {
       const formData = watchedValues;
       localStorage.setItem(SESSION_KEY, JSON.stringify(formData));
@@ -151,7 +151,7 @@ const InvoiceForm = () => {
     } catch (error) {
       console.error('Error saving session data:', error);
     }
-  };
+  }, [watchedValues, items, selectedBusinessId, selectedBuyerId, gstRate, taxType]);
 
   // Clear session data (for new invoice)
   const clearSessionData = () => {
