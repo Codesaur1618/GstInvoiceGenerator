@@ -8,5 +8,6 @@ electron.js
 .env.development.local
 .env.test.local
 .env.production.local
+package.json
 package-lock.json
 gstfinal.zip
