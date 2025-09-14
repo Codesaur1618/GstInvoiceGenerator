@@ -6,7 +6,7 @@ A full-stack web application for generating GST invoices with PDF export and dat
 
 - **Frontend**: React + TailwindCSS
 - **Backend**: Node.js + Express
-- **Database**: Supabase (PostgreSQL)
+- **Database**: SQLite (Local)
 - **Deployment**: Vercel/Netlify (frontend) + Railway/Render (backend)
 
 ## Features
@@ -15,7 +15,7 @@ A full-stack web application for generating GST invoices with PDF export and dat
 - 🧮 Auto-calculation of taxes (CGST, SGST, IGST)
 - 🖨️ Printable invoice format matching GST standards
 - 📄 PDF download functionality
-- 💾 Database storage with Supabase
+- 💾 Database storage with SQLite
 - 📊 Invoice history and management
 - 🎨 Modern UI with TailwindCSS
 
@@ -34,7 +34,6 @@ A full-stack web application for generating GST invoices with PDF export and dat
 
 - Node.js (v16 or higher)
 - npm or yarn
-- Supabase account
 
 ### Installation
 
@@ -46,14 +45,14 @@ A full-stack web application for generating GST invoices with PDF export and dat
    cd ../backend && npm install
    ```
 
-3. Set up Supabase:
-   - Create a new Supabase project
-   - Run the SQL schema from `db/schema.sql`
-   - Get your Supabase URL and API key
+3. Initialize the database:
+   ```bash
+   npm run db:init
+   ```
 
 4. Configure environment variables:
-   - Backend: Create `backend/.env` with Supabase credentials
-   - Frontend: Create `frontend/.env.local` with API URL
+   - Backend: Copy `backend/env.example` to `backend/.env`
+   - Frontend: Copy `frontend/env.example` to `frontend/.env.local`
 
 ### Development
 
@@ -87,7 +86,7 @@ npm run dev:backend   # Backend on http://localhost:5000
 1. Connect your GitHub repository
 2. Set build command: `cd backend && npm install`
 3. Set start command: `cd backend && npm start`
-4. Add environment variables for Supabase
+4. Add environment variables for SQLite database
 
 ## License
 

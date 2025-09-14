@@ -97,7 +97,7 @@ const InvoiceForm = () => {
   // Fetch available buyers
   const fetchBuyers = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/buyers', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || '/api'}/buyers`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -114,7 +114,7 @@ const InvoiceForm = () => {
   // Fetch available businesses
   const fetchBusinesses = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/sellers', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || '/api'}/sellers`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       const data = await response.json();
@@ -272,7 +272,7 @@ const InvoiceForm = () => {
         return;
       }
       
-      const buyerResponse = await fetch(`http://localhost:5000/api/buyers/${selectedBuyerId}`, {
+      const buyerResponse = await fetch(`${process.env.REACT_APP_API_URL || '/api'}/buyers/${selectedBuyerId}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       const buyerData = await buyerResponse.json();

@@ -26,7 +26,7 @@ const BusinessManagement = () => {
   const fetchBusinesses = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/sellers', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || '/api'}/sellers`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -45,8 +45,8 @@ const BusinessManagement = () => {
     e.preventDefault();
     try {
       const url = editingBusiness 
-        ? 'http://localhost:5000/api/sellers'
-        : 'http://localhost:5000/api/sellers';
+        ? `${process.env.REACT_APP_API_URL || '/api'}/sellers`
+        : `${process.env.REACT_APP_API_URL || '/api'}/sellers`;
       
       const method = editingBusiness ? 'PUT' : 'POST';
       

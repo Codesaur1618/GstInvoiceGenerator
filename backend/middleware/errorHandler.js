@@ -8,8 +8,8 @@ const errorHandler = (err, req, res, next) => {
     status: err.status || 500
   };
 
-  // Supabase errors
-  if (err.code && err.code.startsWith('PGRST')) {
+  // Database errors
+  if (err.code && err.code.startsWith('SQLITE')) {
     error.status = 400;
     error.message = 'Database operation failed';
   }
