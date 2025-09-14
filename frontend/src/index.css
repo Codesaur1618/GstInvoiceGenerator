@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for GST Invoice */
+@layer components {
+  .invoice-container {
+    @apply max-w-5xl mx-auto bg-white shadow-lg;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .invoice-header {
+    @apply border-b-2 border-gray-800 pb-4 mb-6;
+  }
+  
+  .invoice-section {
+    @apply mb-4;
+  }
+  
+  .invoice-table {
+    @apply w-full border-collapse border border-gray-400 text-sm;
+  }
+  
+  .invoice-table th {
+    @apply bg-gray-200 border border-gray-400 px-2 py-1 text-left font-semibold text-xs;
+  }
+  
+  .invoice-table td {
+    @apply border border-gray-400 px-2 py-1 text-xs;
+  }
+  
+  .invoice-total-section {
+    @apply mt-6 flex justify-end;
+  }
+  
+  .invoice-total-table {
+    @apply w-80 border-collapse border border-gray-400;
+  }
+  
+  .print-button {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded;
+  }
+  
+  .download-button {
+    @apply bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2;
+  }
+  
+  .save-button {
+    @apply bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded ml-2;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .invoice-container {
+    @apply shadow-none max-w-none p-4;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  
+  body {
+    @apply text-black bg-white;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .page-break {
+    page-break-before: always;
+  }
+  
+  /* Ensure proper table formatting in print */
+  .invoice-table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+  
+  .invoice-table th,
+  .invoice-table td {
+    border: 1px solid #000 !important;
+    padding: 4px !important;
+    font-size: 11px !important;
+  }
+  
+  .invoice-table th {
+    background-color: #f0f0f0 !important;
+    font-weight: bold !important;
+  }
+  
+  /* Ensure proper spacing for sections */
+  .invoice-section {
+    margin-bottom: 16px !important;
+  }
+  
+  /* Bold headings */
+  h2 {
+    font-weight: bold !important;
+    font-size: 14px !important;
+    margin-bottom: 8px !important;
+  }
+}
