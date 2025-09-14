@@ -5,77 +5,33 @@ import InvoiceForm from './components/InvoiceForm';
 import InvoiceHistory from './components/InvoiceHistory';
 import InvoicePreview from './components/InvoicePreview';
 import Navbar from './components/Navbar';
-import LoginForm from './components/LoginForm';
 import BusinessManagement from './components/BusinessManagement';
 import BuyerManagement from './components/BuyerManagement';
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // Create a default user object to bypass authentication
+  const [user] = useState({
+    id: 1,
+    username: 'admin',
+    email: 'admin@example.com',
+    role: 'admin',
+    business_name: 'GST Invoice Generator',
+    business_address: 'Default Address',
+    gstin: '123456789012345',
+    contact_number: '1234567890',
+    state: 'Default State',
+    state_code: '01'
+  });
 
   useEffect(() => {
-    // Check if user is already logged in
-    const token = localStorage.getItem('token');
-    const savedUser = localStorage.getItem('user');
-    
-    if (token && savedUser) {
-      try {
-        const userData = JSON.parse(savedUser);
-        setUser(userData);
-        // Update document title with business name
-        document.title = userData.business_name || 'GST Invoice Generator';
-      } catch (error) {
-        console.error('Error parsing saved user:', error);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        document.title = 'GST Invoice Generator';
-      }
-    } else {
-      document.title = 'GST Invoice Generator';
-    }
-    
-    setLoading(false);
+    // Set document title
+    document.title = 'GST Invoice Generator';
   }, []);
 
-  const handleLogin = (userData) => {
-    setUser(userData);
-    // Update document title with business name
-    document.title = userData.business_name || 'GST Invoice Generator';
-  };
-
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
-    // Reset document title
-    document.title = 'GST Invoice Generator';
+    // Since we're bypassing auth, just reload the page
+    window.location.reload();
   };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <LoginForm onLogin={handleLogin} />
-        <Toaster 
-          position="top-right"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              background: '#363636',
-              color: '#fff',
-            },
-          }}
-        />
-      </div>
-    );
-  }
 
   return (
     <Router>
