@@ -114,172 +114,162 @@ export default async function handler(req, res) {
     // Handle sellers routes
     if (path.startsWith('/sellers')) {
       if (method === 'GET') {
-        // Return mock data for now
-        const mockSellers = [
-          {
-            id: 1,
-            business_name: 'GST Invoice Generator',
-            business_address: '123 Main Street, City, State',
-            gstin: '123456789012345',
-            contact_number: '1234567890',
-            email: 'admin@example.com',
-            bank_name: 'Sample Bank',
-            bank_account_number: '1234567890',
-            bank_ifsc_code: 'SBIN0001234',
-            state: 'Default State',
-            state_code: '01'
-          }
-        ];
-        
-        return res.status(200).json({ sellers: mockSellers });
+        try {
+          const sellers = await db('sellers').select('*').orderBy('created_at', 'desc');
+          return res.status(200).json({ sellers });
+        } catch (error) {
+          console.error('Error fetching sellers:', error);
+          return res.status(500).json({ error: 'Failed to fetch sellers' });
+        }
       }
 
       if (method === 'POST') {
-        const sellerData = req.body;
-        
-        return res.status(201).json({
-          message: 'Business created successfully',
-          seller: { id: Date.now(), ...sellerData }
-        });
+        try {
+          const sellerData = req.body;
+          const [sellerId] = await db('sellers').insert(sellerData);
+          const newSeller = await db('sellers').where({ id: sellerId }).first();
+          
+          return res.status(201).json({
+            message: 'Business created successfully',
+            seller: newSeller
+          });
+        } catch (error) {
+          console.error('Error creating seller:', error);
+          return res.status(500).json({ error: 'Failed to create business' });
+        }
       }
 
       if (method === 'PUT') {
-        const sellerData = req.body;
-        
-        return res.status(200).json({
-          message: 'Business updated successfully',
-          seller: { id: req.query.id || Date.now(), ...sellerData }
-        });
+        try {
+          const sellerId = req.query.id;
+          const sellerData = req.body;
+          
+          if (!sellerId) {
+            return res.status(400).json({ error: 'Seller ID is required' });
+          }
+          
+          await db('sellers').where({ id: sellerId }).update(sellerData);
+          const updatedSeller = await db('sellers').where({ id: sellerId }).first();
+          
+          return res.status(200).json({
+            message: 'Business updated successfully',
+            seller: updatedSeller
+          });
+        } catch (error) {
+          console.error('Error updating seller:', error);
+          return res.status(500).json({ error: 'Failed to update business' });
+        }
       }
     }
 
     // Handle buyers routes
     if (path.startsWith('/buyers')) {
       if (method === 'GET') {
-        // Return mock data for now
-        const mockBuyers = [
-          {
-            id: 1,
-            buyer_name: 'Sample Customer',
-            buyer_address: '456 Customer Street, City, State',
-            buyer_gstin: '987654321098765',
-            buyer_contact: '9876543210',
-            buyer_email: 'customer@example.com',
-            buyer_state: 'Customer State',
-            buyer_state_code: '02'
-          },
-          {
-            id: 2,
-            buyer_name: 'Another Customer',
-            buyer_address: '789 Another Street, City, State',
-            buyer_gstin: '111111111111111',
-            buyer_contact: '1111111111',
-            buyer_email: 'another@example.com',
-            buyer_state: 'Another State',
-            buyer_state_code: '03'
-          }
-        ];
-        
-        return res.status(200).json({ buyers: mockBuyers });
+        try {
+          const buyers = await db('buyers').select('*').orderBy('created_at', 'desc');
+          return res.status(200).json({ buyers });
+        } catch (error) {
+          console.error('Error fetching buyers:', error);
+          return res.status(500).json({ error: 'Failed to fetch buyers' });
+        }
       }
 
       if (method === 'POST') {
-        const buyerData = req.body;
-        
-        return res.status(201).json({
-          message: 'Buyer created successfully',
-          buyer: { id: Date.now(), ...buyerData }
-        });
+        try {
+          const buyerData = req.body;
+          const [buyerId] = await db('buyers').insert(buyerData);
+          const newBuyer = await db('buyers').where({ id: buyerId }).first();
+          
+          return res.status(201).json({
+            message: 'Buyer created successfully',
+            buyer: newBuyer
+          });
+        } catch (error) {
+          console.error('Error creating buyer:', error);
+          return res.status(500).json({ error: 'Failed to create buyer' });
+        }
       }
 
       if (method === 'PUT') {
-        const buyerData = req.body;
-        
-        return res.status(200).json({
-          message: 'Buyer updated successfully',
-          buyer: { id: req.query.id || Date.now(), ...buyerData }
-        });
+        try {
+          const buyerId = req.query.id;
+          const buyerData = req.body;
+          
+          if (!buyerId) {
+            return res.status(400).json({ error: 'Buyer ID is required' });
+          }
+          
+          await db('buyers').where({ id: buyerId }).update(buyerData);
+          const updatedBuyer = await db('buyers').where({ id: buyerId }).first();
+          
+          return res.status(200).json({
+            message: 'Buyer updated successfully',
+            buyer: updatedBuyer
+          });
+        } catch (error) {
+          console.error('Error updating buyer:', error);
+          return res.status(500).json({ error: 'Failed to update buyer' });
+        }
       }
     }
 
     // Handle invoices routes
     if (path.startsWith('/invoices')) {
       if (method === 'GET') {
-        // Return mock data for now
-        const mockInvoices = [
-          {
-            id: 1,
-            invoice_number: 'INV-001',
-            date: '2024-01-15',
-            buyer_name: 'Sample Customer',
-            buyer_address: '456 Customer Street, City, State',
-            buyer_gstin: '987654321098765',
-            items: [
-              {
-                description: 'Product 1',
-                quantity: 2,
-                rate: 100,
-                amount: 200,
-                cgst_rate: 9,
-                sgst_rate: 9,
-                cgst_amount: 18,
-                sgst_amount: 18,
-                total: 236
-              }
-            ],
-            subtotal: 200,
-            cgst_total: 18,
-            sgst_total: 18,
-            total_amount: 236,
-            status: 'paid'
-          },
-          {
-            id: 2,
-            invoice_number: 'INV-002',
-            date: '2024-01-16',
-            buyer_name: 'Another Customer',
-            buyer_address: '789 Another Street, City, State',
-            buyer_gstin: '111111111111111',
-            items: [
-              {
-                description: 'Product 2',
-                quantity: 1,
-                rate: 500,
-                amount: 500,
-                cgst_rate: 9,
-                sgst_rate: 9,
-                cgst_amount: 45,
-                sgst_amount: 45,
-                total: 590
-              }
-            ],
-            subtotal: 500,
-            cgst_total: 45,
-            sgst_total: 45,
-            total_amount: 590,
-            status: 'pending'
-          }
-        ];
-        
-        return res.status(200).json({ invoices: mockInvoices });
+        try {
+          const invoices = await db('invoices')
+            .select('*')
+            .orderBy('created_at', 'desc');
+          return res.status(200).json({ invoices });
+        } catch (error) {
+          console.error('Error fetching invoices:', error);
+          return res.status(500).json({ error: 'Failed to fetch invoices' });
+        }
       }
 
       if (method === 'POST') {
-        const invoiceData = req.body;
-        
-        return res.status(201).json({
-          message: 'Invoice created successfully',
-          invoice: { id: Date.now(), ...invoiceData }
-        });
+        try {
+          const invoiceData = req.body;
+          
+          // Generate invoice number if not provided
+          if (!invoiceData.invoice_number) {
+            const count = await db('invoices').count('* as count').first();
+            invoiceData.invoice_number = `INV-${String(count.count + 1).padStart(3, '0')}`;
+          }
+          
+          const [invoiceId] = await db('invoices').insert(invoiceData);
+          const newInvoice = await db('invoices').where({ id: invoiceId }).first();
+          
+          return res.status(201).json({
+            message: 'Invoice created successfully',
+            invoice: newInvoice
+          });
+        } catch (error) {
+          console.error('Error creating invoice:', error);
+          return res.status(500).json({ error: 'Failed to create invoice' });
+        }
       }
 
       if (method === 'PUT') {
-        const invoiceData = req.body;
-        
-        return res.status(200).json({
-          message: 'Invoice updated successfully',
-          invoice: { id: req.query.id || Date.now(), ...invoiceData }
-        });
+        try {
+          const invoiceId = req.query.id;
+          const invoiceData = req.body;
+          
+          if (!invoiceId) {
+            return res.status(400).json({ error: 'Invoice ID is required' });
+          }
+          
+          await db('invoices').where({ id: invoiceId }).update(invoiceData);
+          const updatedInvoice = await db('invoices').where({ id: invoiceId }).first();
+          
+          return res.status(200).json({
+            message: 'Invoice updated successfully',
+            invoice: updatedInvoice
+          });
+        } catch (error) {
+          console.error('Error updating invoice:', error);
+          return res.status(500).json({ error: 'Failed to update invoice' });
+        }
       }
     }
 
