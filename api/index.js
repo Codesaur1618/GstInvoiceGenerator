@@ -18,6 +18,40 @@ export default async function handler(req, res) {
     const { method, url } = req;
     const path = url.replace('/api', '');
 
+    // Handle health check
+    if (path === '/health') {
+      try {
+        // Test database connection
+        await db.raw('SELECT 1');
+        
+        // Get table counts
+        const usersCount = await db('users').count('* as count').first();
+        const sellersCount = await db('sellers').count('* as count').first();
+        const buyersCount = await db('buyers').count('* as count').first();
+        const invoicesCount = await db('invoices').count('* as count').first();
+        
+        return res.status(200).json({
+          status: 'healthy',
+          database: 'connected',
+          timestamp: new Date().toISOString(),
+          tables: {
+            users: usersCount.count,
+            sellers: sellersCount.count,
+            buyers: buyersCount.count,
+            invoices: invoicesCount.count
+          }
+        });
+      } catch (error) {
+        console.error('Health check failed:', error);
+        return res.status(500).json({
+          status: 'unhealthy',
+          database: 'disconnected',
+          error: error.message,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+
     // Handle auth routes
     if (path.startsWith('/auth')) {
       const authPath = path.replace('/auth', '');
