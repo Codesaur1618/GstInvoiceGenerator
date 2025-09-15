@@ -2,11 +2,6 @@
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/build",
   "installCommand": "npm install",
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "@vercel/node@3.0.7"
-    }
-  },
   "env": {
     "DATABASE_URL": "/tmp/gst_invoice.db",
     "JWT_SECRET": "your-super-secret-jwt-key-change-this-in-production",
